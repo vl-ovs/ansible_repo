@@ -1,0 +1,22 @@
+[servers_master]
+server4 ansible_host=172.31.34.219
+
+[servers_web]
+#server1 ansible_host=10.0.0.217
+#server5 ansible_host=10.0.0.52
+
+server6 ansible_host=10.0.0.219
+
+
+#server1 ansible_host=172.31.46.140
+#server2 ansible_host=172.31.39.69
+
+[servers_db]
+server3 ansible_host=172.31.34.86
+
+[servers_web_db:children]
+servers_web
+servers_db
+servers_master
+
+

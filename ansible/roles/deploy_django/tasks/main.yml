@@ -1,0 +1,74 @@
+---
+# tasks file for deploy_django
+- name: Create directory
+  file: path={{project_name_path}} state=directory mode=0755 owner=ubuntu group=ubuntu #mode=0644
+ # become: true
+  
+- name: Install Django
+  pip:
+     name: django
+     virtualenv: "{{project_name_path}}/myprojectenv"
+     virtualenv_command: virtualenv
+     virtualenv_python: python3
+#  become: true
+
+- name: Install python library for PSQL
+  pip:
+     name: psycopg2
+     virtualenv: "{{project_name_path}}/myprojectenv"
+     virtualenv_command: virtualenv
+     virtualenv_python: python3
+#  become: true
+
+#- name: Install python3-migrate
+#  pip:
+#     name: python3-migrate
+#     virtualenv: "{{project_name_path}}/myprojectenv"
+#     virtualenv_command: virtualenv
+#     virtualenv_python: python3
+#  become: true
+
+- name: Install a django project
+  command: "{{ project_name_path }}/myprojectenv/bin/django-admin.py startproject myproject /home/ubuntu/myprojectdir/" #chdir=/home/ubuntu/myprojectdir/" 
+  #become: true
+
+#  command: "{{ project_name_path }}/myprojectenv/bin/django-admin.py startproject {{ project_name }}  chdir={{ project_name_path }}/"
+#  ignore_errors: True
+
+- name: Copy app wsgi1.py to Servers
+  copy: src=wsgi1.py  dest={{ project_name_path }}/{{ project_name }} owner=ubuntu group=ubuntu mode=0644
+
+#  copy: src=wsgi1.py  dest={{ project_name_path }}/{{ project_name }}
+
+- name: Create Settings File for Django
+  template: src=settings.py.j2 dest=/home/ubuntu/myprojectdir/myproject/settings.py
+#  template: src=settings.py.j2 dest={{ project_name_path }}/{{ project_name }}/{{ project_name }}/settings.py
+#  template: src=settings.py.j2 dest={{ project_name_path }}/settings.py
+#  become: true
+
+- name: Make migrations
+#  shell: "{{project_name_path}}/myprojectenv/bin/python3 {{ project_name_path }}/{{ project_name }}/manage.py makemigrations"
+  
+  shell: "{{project_name_path}}/myprojectenv/bin/python3 {{ project_name_path }}/manage.py makemigrations"
+#  become: true
+  ignore_errors: True
+
+# /{{ project_name }}
+- name: Migrate database
+  django_manage: command="migrate --noinput" app_path={{ project_name_path }}/ virtualenv="{{project_name_path}}/myprojectenv"
+
+#  django_manage: app_path={{ project_name_path }}/{{ project_name }}
+#                     command=:"migrate"
+#                     virtualenv={{project_name_path}}/myprojectenv
+#  become: true
+  ignore_errors: True
+
+# {{ project_name }}
+- name: Get all static files
+  django_manage: command="collectstatic --noinput" app_path={{ project_name_path }} virtualenv="{{project_name_path}}/myprojectenv"
+  ignore_errors: True
+#  django_manage: app_path={{ project_name_path }}/{{ project_name }}
+#                     command="collectstatic --noinput"
+#                     virtualenv={{project_name_path}}/myprojectenv
+#  ignore_errors: True
+

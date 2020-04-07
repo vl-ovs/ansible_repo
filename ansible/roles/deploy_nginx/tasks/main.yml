@@ -1,0 +1,27 @@
+---
+# tasks file for deploy_nginx
+- name: Install Nginx
+  apt: name=nginx state=latest update_cache=true
+  register: nginxinstalled
+  notify:
+      - nginx start
+
+- name: Add Nginx config
+  when: nginxinstalled is success
+  template: src=myproject.j2 dest=/etc/nginx/sites-available/myproject owner=www-data group=www-data
+
+- name: Create Root Directory for Nginx
+  when: nginxinstalled is success
+  file: path={{ root }}  mode=775 state=directory owner=www-data group=www-data
+  notify:
+      - nginx restart
+
+- name: Symlink site conf to sites-enabled
+  become: true
+  file:
+    src: "/etc/nginx/sites-available/{{ conf_name }}"
+    dest: "/etc/nginx/sites-enabled/{{ conf_name }}"
+    state: link
+    force: yes
+  notify:
+      - nginx restart

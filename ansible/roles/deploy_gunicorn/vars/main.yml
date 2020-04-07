@@ -1,0 +1,7 @@
+---
+# vars file for deploy_gunicorn
+
+# project_name_path: /home/ubuntu/myprojectdir/myproject
+ project_name_path: /home/ubuntu/myprojectdir
+ project_name: myproject
+

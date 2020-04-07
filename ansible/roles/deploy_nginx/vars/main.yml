@@ -1,0 +1,7 @@
+---
+# vars file for deploy_nginx
+
+ hostname: localhost
+ root: /home/ubuntu/myprojectdir
+ conf_name: myproject
+ domain: djdomain

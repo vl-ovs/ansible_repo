@@ -1,0 +1,5 @@
+---
+# vars file for deploy_django
+
+ project_name_path: /home/ubuntu/myprojectdir
+ project_name: myproject

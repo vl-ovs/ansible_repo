@@ -1,0 +1,6 @@
+---
+# vars file for deploy_db_postgresql
+
+ db_user:  myprojectuser
+ db_password: d*&^%%^JLKNOIHlkhnu89y98
+ db_name: myproject

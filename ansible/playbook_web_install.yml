@@ -1,0 +1,9 @@
+---
+- hosts: servers_web
+  become: true
+  roles:
+    - server_prepare
+    - deploy_db_postgresql
+    - deploy_django
+    - deploy_gunicorn
+    - deploy_nginx
